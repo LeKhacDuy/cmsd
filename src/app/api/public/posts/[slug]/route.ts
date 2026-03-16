@@ -1,0 +1,24 @@
+import { NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
+
+export async function GET(
+    request: Request,
+    { params }: { params: Promise<{ slug: string }> }
+) {
+    const { slug } = await params;
+
+    const post = await prisma.post.findUnique({
+        where: { slug, status: 'PUBLISHED' },
+        include: {
+            category: { select: { name: true, slug: true } },
+            country: { select: { name: true, slug: true, flagIcon: true } },
+            author: { select: { name: true } },
+        },
+    });
+
+    if (!post) {
+        return NextResponse.json({ error: 'Post not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(post);
+}

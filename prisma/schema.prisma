@@ -1,0 +1,203 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  EMPLOYEE
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(EMPLOYEE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  posts  Post[]
+  media  Media[]
+
+  @@map("users")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  posts Post[]
+
+  @@map("categories")
+}
+
+model Country {
+  id       String @id @default(cuid())
+  name     String
+  slug     String @unique
+  flagIcon String?
+
+  posts    Post[]
+  programs Program[]
+
+  @@map("countries")
+}
+
+model ServiceGroup {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  icon        String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  programs Program[]
+
+  @@map("service_groups")
+}
+
+model Program {
+  id            String     @id @default(cuid())
+  name          String
+  slug          String     @unique
+  excerpt       String?
+  content       String     @db.Text
+  featuredImage String?
+  status        PostStatus @default(DRAFT)
+  locale        String     @default("vi")
+  sortOrder     Int        @default(0)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  serviceGroupId String
+  serviceGroup   ServiceGroup @relation(fields: [serviceGroupId], references: [id])
+  countryId      String?
+  country        Country?     @relation(fields: [countryId], references: [id])
+  projects       Project[]
+
+  @@map("programs")
+}
+
+model Project {
+  id            String     @id @default(cuid())
+  name          String
+  slug          String     @unique
+  excerpt       String?
+  content       String     @db.Text
+  featuredImage String?
+  status        PostStatus @default(DRAFT)
+  locale        String     @default("vi")
+  sortOrder     Int        @default(0)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  programId     String
+  program       Program    @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  @@map("projects")
+}
+
+model Post {
+  id            String     @id @default(cuid())
+  title         String
+  slug          String     @unique
+  excerpt       String?
+  content       String     @db.Text
+  featuredImage String?
+  status        PostStatus @default(DRAFT)
+  locale        String     @default("vi")
+  publishedAt   DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  authorId   String
+  author     User     @relation(fields: [authorId], references: [id])
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
+  countryId  String?
+  country    Country?  @relation(fields: [countryId], references: [id])
+
+  @@map("posts")
+}
+
+model Media {
+  id         String   @id @default(cuid())
+  filename   String
+  url        String
+  mimeType   String
+  size       Int
+  createdAt  DateTime @default(now())
+
+  uploaderId String
+  uploader   User   @relation(fields: [uploaderId], references: [id])
+
+  @@map("media")
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
+
+model Consultation {
+  id        String   @id @default(cuid())
+  fullName  String
+  phone     String
+  city      String
+  email     String?
+  program   String
+  note      String?  @db.Text
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("consultations")
+}
+
+model Banner {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  description String?
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  images BannerImage[]
+
+  @@map("banners")
+}
+
+model BannerImage {
+  id        String   @id @default(cuid())
+  url       String
+  title     String?
+  link      String?
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  bannerId  String
+  banner    Banner  @relation(fields: [bannerId], references: [id], onDelete: Cascade)
+
+  @@map("banner_images")
+}
+
