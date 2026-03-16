@@ -2,12 +2,13 @@
 
 import prisma from '@/lib/prisma';
 import { auth } from '@/lib/auth';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, unstable_noStore as noStore } from 'next/cache';
 
 export async function getConsultations(params?: {
     isRead?: boolean;
     search?: string;
 }) {
+    noStore();
     const where: any = {};
 
     if (params?.isRead !== undefined) where.isRead = params.isRead;
@@ -26,6 +27,7 @@ export async function getConsultations(params?: {
 }
 
 export async function getConsultationStats() {
+    noStore();
     const [total, unread] = await Promise.all([
         prisma.consultation.count(),
         prisma.consultation.count({ where: { isRead: false } }),

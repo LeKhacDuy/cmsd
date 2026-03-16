@@ -2,10 +2,11 @@
 
 import prisma from '@/lib/prisma';
 import { auth } from '@/lib/auth';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, unstable_noStore as noStore } from 'next/cache';
 import slugify from 'slugify';
 
 export async function getCategoriesAll() {
+    noStore();
     return prisma.category.findMany({
         orderBy: { name: 'asc' },
         include: { _count: { select: { posts: true } } },

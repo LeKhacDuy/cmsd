@@ -2,12 +2,13 @@
 
 import prisma from '@/lib/prisma';
 import { auth } from '@/lib/auth';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, unstable_noStore as noStore } from 'next/cache';
 import slugify from 'slugify';
 
 // ============ SERVICE GROUPS ============
 
 export async function getServiceGroups() {
+    noStore();
     return prisma.serviceGroup.findMany({
         orderBy: { sortOrder: 'asc' },
         include: { _count: { select: { programs: true } } },
@@ -50,6 +51,7 @@ export async function getPrograms(params?: {
     status?: string;
     search?: string;
 }) {
+    noStore();
     const where: any = {};
 
     if (params?.serviceGroupId) where.serviceGroupId = params.serviceGroupId;
@@ -68,6 +70,7 @@ export async function getPrograms(params?: {
 }
 
 export async function getProgram(id: string) {
+    noStore();
     return prisma.program.findUnique({
         where: { id },
         include: { serviceGroup: true, country: true },

@@ -2,12 +2,13 @@
 
 import prisma from '@/lib/prisma';
 import { auth } from '@/lib/auth';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, unstable_noStore as noStore } from 'next/cache';
 import slugify from 'slugify';
 
 // ========== BANNERS ==========
 
 export async function getBanners() {
+    noStore();
     return prisma.banner.findMany({
         include: {
             images: {

@@ -2,10 +2,11 @@
 
 import prisma from '@/lib/prisma';
 import { auth } from '@/lib/auth';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, unstable_noStore as noStore } from 'next/cache';
 import { hashSync } from 'bcryptjs';
 
 export async function getUsers() {
+    noStore();
     return prisma.user.findMany({
         orderBy: { createdAt: 'desc' },
         select: { id: true, email: true, name: true, role: true, createdAt: true },

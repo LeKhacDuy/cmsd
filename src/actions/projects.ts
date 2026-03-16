@@ -2,11 +2,12 @@
 
 import prisma from '@/lib/prisma';
 import { auth } from '@/lib/auth';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, unstable_noStore as noStore } from 'next/cache';
 import slugify from 'slugify';
 import { PostStatus } from '@prisma/client';
 
 export async function getProjects(params?: { search?: string; status?: PostStatus; programId?: string }) {
+    noStore();
     const where: any = {};
 
     if (params?.search) {
@@ -31,6 +32,7 @@ export async function getProjects(params?: { search?: string; status?: PostStatu
 }
 
 export async function getProjectById(id: string) {
+    noStore();
     return prisma.project.findUnique({
         where: { id },
         include: { program: true },
@@ -38,6 +40,7 @@ export async function getProjectById(id: string) {
 }
 
 export async function getProgramsForSelect() {
+    noStore();
     return prisma.program.findMany({
         select: { id: true, name: true, slug: true },
         orderBy: { createdAt: 'desc' },

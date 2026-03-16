@@ -2,7 +2,7 @@
 
 import prisma from '@/lib/prisma';
 import { auth } from '@/lib/auth';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, unstable_noStore as noStore } from 'next/cache';
 import slugify from 'slugify';
 
 export async function getPosts(params?: {
@@ -13,6 +13,7 @@ export async function getPosts(params?: {
     page?: number;
     limit?: number;
 }) {
+    noStore();
     const page = params?.page || 1;
     const limit = params?.limit || 12;
     const skip = (page - 1) * limit;
@@ -52,6 +53,7 @@ export async function getPosts(params?: {
 }
 
 export async function getPost(id: string) {
+    noStore();
     return prisma.post.findUnique({
         where: { id },
         include: { author: true, category: true, country: true },
@@ -143,9 +145,11 @@ export async function deletePost(id: string) {
 }
 
 export async function getCategories() {
+    noStore();
     return prisma.category.findMany({ orderBy: { name: 'asc' } });
 }
 
 export async function getCountries() {
+    noStore();
     return prisma.country.findMany({ orderBy: { name: 'asc' } });
 }
