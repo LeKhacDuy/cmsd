@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getCategoriesAll, deleteCategory } from '@/actions/categories';
 import { auth } from '@/lib/auth';
 import CategoriesClient from './CategoriesClient';

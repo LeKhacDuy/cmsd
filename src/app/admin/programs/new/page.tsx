@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getServiceGroups } from '@/actions/programs';
 import { getCountriesAll } from '@/actions/countries';
 import ProgramForm from './ProgramForm';

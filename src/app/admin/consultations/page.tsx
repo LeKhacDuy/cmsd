@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getConsultations, getConsultationStats } from '@/actions/consultations';
 import ConsultationsClient from './ConsultationsClient';
 

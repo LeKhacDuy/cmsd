@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getUsers } from '@/actions/users';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';

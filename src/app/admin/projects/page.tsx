@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getProjects, getProgramsForSelect } from '@/actions/projects';
 import ProjectsClient from './ProjectsClient';
 

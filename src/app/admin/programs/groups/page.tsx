@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getServiceGroups } from '@/actions/programs';
 import { auth } from '@/lib/auth';
 import ServiceGroupsClient from './ServiceGroupsClient';

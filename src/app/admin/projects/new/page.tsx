@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getProgramsForSelect } from '@/actions/projects';
 import ProjectForm from './ProjectForm';
 

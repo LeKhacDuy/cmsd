@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getCategories, getCountries } from '@/actions/posts';
 import PostForm from './PostForm';
 

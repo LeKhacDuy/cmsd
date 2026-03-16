@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getPosts, getCategories, getCountries, deletePost } from '@/actions/posts';
 import { auth } from '@/lib/auth';
 import Link from 'next/link';

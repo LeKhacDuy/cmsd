@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getPost, getCategories, getCountries } from '@/actions/posts';
 import { auth } from '@/lib/auth';
 import { redirect, notFound } from 'next/navigation';

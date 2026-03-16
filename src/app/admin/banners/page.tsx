@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getBanners } from '@/actions/banners';
 import { auth } from '@/lib/auth';
 import BannersClient from './BannersClient';

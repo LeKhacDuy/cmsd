@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getCountriesAll } from '@/actions/countries';
 import { auth } from '@/lib/auth';
 import CountriesClient from './CountriesClient';
