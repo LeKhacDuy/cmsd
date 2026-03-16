@@ -1,9 +1,8 @@
 FROM node:20-slim AS base
+RUN apt-get update -y && apt-get install -y openssl
 
 # Install dependencies only when needed
 FROM base AS deps
-# Debian needs openssl for Prisma
-RUN apt-get update -y && apt-get install -y openssl
 WORKDIR /app
 
 # Install dependencies
