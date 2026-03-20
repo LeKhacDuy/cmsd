@@ -19,6 +19,7 @@ import ImageUpload from '@/components/ImageUpload';
 
 // ---- Types ----
 
+type ListItem = { text: string; children: string[] };
 type InfoRow = { label: string; value: string };
 type BenefitItem = { title: string; description: string };
 type StepItem = { title: string; description: string };
@@ -29,7 +30,7 @@ export type Block = {
     type: 'heading' | 'paragraph' | 'image' | 'list' | 'info_table' | 'benefits' | 'steps' | 'timeline';
     content: string;
     caption?: string;
-    items?: string[];
+    items?: ListItem[];
     infoRows?: InfoRow[];
     benefitItems?: BenefitItem[];
     stepItems?: StepItem[];
@@ -45,13 +46,14 @@ export type Section = {
 interface BlockEditorProps {
     initialSections?: Section[];
     onChange: (sections: Section[]) => void;
+    hideAdvancedBlocks?: boolean;
 }
 
 function generateId() {
     return Math.random().toString(36).substr(2, 9);
 }
 
-export default function BlockEditor({ initialSections = [], onChange }: BlockEditorProps) {
+export default function BlockEditor({ initialSections = [], onChange, hideAdvancedBlocks = false }: BlockEditorProps) {
     const [sections, setSections] = useState<Section[]>(initialSections);
 
     const update = (newSections: Section[]) => {
@@ -95,7 +97,7 @@ export default function BlockEditor({ initialSections = [], onChange }: BlockEdi
                     id: generateId(),
                     type,
                     content: '',
-                    ...(type === 'list' ? { items: [''] } : {}),
+                    ...(type === 'list' ? { items: [{ text: '', children: [] }] } : {}),
                     ...(type === 'image' ? { caption: '' } : {}),
                     ...(type === 'info_table' ? { infoRows: [{ label: '', value: '' }] } : {}),
                     ...(type === 'benefits' ? { benefitItems: [{ title: '', description: '' }] } : {}),
@@ -153,43 +155,59 @@ export default function BlockEditor({ initialSections = [], onChange }: BlockEdi
     };
 
     // ---- List item helpers ----
-    const addListItem = (sectionId: string, blockId: string) => {
+    const normalizeListItems = (raw: any[]): ListItem[] =>
+        raw.map((i) =>
+            typeof i === 'string'
+                ? { text: i, children: [] }
+                : { text: i.text ?? '', children: i.children ?? [] }
+        );
+
+    const updateListItems = (sectionId: string, blockId: string, updater: (items: ListItem[]) => ListItem[]) => {
         update(sections.map((s) => {
             if (s.id !== sectionId) return s;
             return {
                 ...s, blocks: s.blocks.map((b) => {
                     if (b.id !== blockId) return b;
-                    return { ...b, items: [...(b.items || []), ''] };
+                    const normalized = normalizeListItems(b.items || []);
+                    return { ...b, items: updater(normalized) };
                 })
             };
         }));
     };
 
-    const updateListItem = (sectionId: string, blockId: string, idx: number, value: string) => {
-        update(sections.map((s) => {
-            if (s.id !== sectionId) return s;
-            return {
-                ...s, blocks: s.blocks.map((b) => {
-                    if (b.id !== blockId) return b;
-                    const items = [...(b.items || [])];
-                    items[idx] = value;
-                    return { ...b, items };
-                })
-            };
-        }));
-    };
+    const addListItem = (sectionId: string, blockId: string) =>
+        updateListItems(sectionId, blockId, (items) => [...items, { text: '', children: [] }]);
 
-    const removeListItem = (sectionId: string, blockId: string, idx: number) => {
-        update(sections.map((s) => {
-            if (s.id !== sectionId) return s;
-            return {
-                ...s, blocks: s.blocks.map((b) => {
-                    if (b.id !== blockId) return b;
-                    return { ...b, items: (b.items || []).filter((_, i) => i !== idx) };
-                })
-            };
-        }));
-    };
+    const updateListItemText = (sectionId: string, blockId: string, idx: number, value: string) =>
+        updateListItems(sectionId, blockId, (items) =>
+            items.map((it, i) => i === idx ? { ...it, text: value } : it)
+        );
+
+    const removeListItem = (sectionId: string, blockId: string, idx: number) =>
+        updateListItems(sectionId, blockId, (items) => items.filter((_, i) => i !== idx));
+
+    const addChildItem = (sectionId: string, blockId: string, parentIdx: number) =>
+        updateListItems(sectionId, blockId, (items) =>
+            items.map((it, i) => i === parentIdx ? { ...it, children: [...it.children, ''] } : it)
+        );
+
+    const updateChildItem = (sectionId: string, blockId: string, parentIdx: number, childIdx: number, value: string) =>
+        updateListItems(sectionId, blockId, (items) =>
+            items.map((it, i) => {
+                if (i !== parentIdx) return it;
+                const children = [...it.children];
+                children[childIdx] = value;
+                return { ...it, children };
+            })
+        );
+
+    const removeChildItem = (sectionId: string, blockId: string, parentIdx: number, childIdx: number) =>
+        updateListItems(sectionId, blockId, (items) =>
+            items.map((it, i) => i === parentIdx
+                ? { ...it, children: it.children.filter((_, ci) => ci !== childIdx) }
+                : it
+            )
+        );
 
     // ---- Generic array item helpers ----
     const updateArrayField = <T,>(sectionId: string, blockId: string, field: string, updater: (arr: T[]) => T[]) => {
@@ -506,22 +524,57 @@ export default function BlockEditor({ initialSections = [], onChange }: BlockEdi
                                     </div>
                                 )}
 
-                                {block.type === 'list' && (
-                                    <div className="be-list-block">
-                                        {(block.items || []).map((item, iIndex) => (
-                                            <div key={iIndex} className="be-list-item">
-                                                <span className="be-list-bullet">•</span>
-                                                <input type="text" className="be-input" placeholder={`Mục ${iIndex + 1}`} value={item} onChange={(e) => updateListItem(section.id, block.id, iIndex, e.target.value)} />
-                                                <button type="button" className="be-btn-icon-sm be-btn-danger" onClick={() => removeListItem(section.id, block.id, iIndex)}>
-                                                    <HiOutlineTrash />
-                                                </button>
-                                            </div>
-                                        ))}
-                                        <button type="button" className="be-add-item" onClick={() => addListItem(section.id, block.id)}>
-                                            <HiOutlinePlus /> Thêm mục
-                                        </button>
-                                    </div>
-                                )}
+                                {block.type === 'list' && (() => {
+                                    const listItems: ListItem[] = (block.items || []).map((i: any) =>
+                                        typeof i === 'string' ? { text: i, children: [] } : { text: i.text ?? '', children: i.children ?? [] }
+                                    );
+                                    return (
+                                        <div className="be-list-block">
+                                            {listItems.map((item, iIndex) => (
+                                                <div key={iIndex} className="be-list-parent-wrap">
+                                                    <div className="be-list-item">
+                                                        <span className="be-list-bullet">•</span>
+                                                        <input
+                                                            type="text"
+                                                            className="be-input"
+                                                            placeholder={`Mục ${iIndex + 1}`}
+                                                            value={item.text}
+                                                            onChange={(e) => updateListItemText(section.id, block.id, iIndex, e.target.value)}
+                                                        />
+                                                        <button type="button" className="be-btn-icon-sm" title="Thêm mục con" onClick={() => addChildItem(section.id, block.id, iIndex)} style={{ color: 'var(--primary)' }}>
+                                                            <HiOutlinePlus />
+                                                        </button>
+                                                        <button type="button" className="be-btn-icon-sm be-btn-danger" onClick={() => removeListItem(section.id, block.id, iIndex)}>
+                                                            <HiOutlineTrash />
+                                                        </button>
+                                                    </div>
+                                                    {item.children.length > 0 && (
+                                                        <div className="be-list-children">
+                                                            {item.children.map((child, cIndex) => (
+                                                                <div key={cIndex} className="be-list-item be-list-child-item">
+                                                                    <span className="be-list-bullet be-list-child-bullet">◦</span>
+                                                                    <input
+                                                                        type="text"
+                                                                        className="be-input"
+                                                                        placeholder={`Mục con ${cIndex + 1}`}
+                                                                        value={child}
+                                                                        onChange={(e) => updateChildItem(section.id, block.id, iIndex, cIndex, e.target.value)}
+                                                                    />
+                                                                    <button type="button" className="be-btn-icon-sm be-btn-danger" onClick={() => removeChildItem(section.id, block.id, iIndex, cIndex)}>
+                                                                        <HiOutlineTrash />
+                                                                    </button>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                            <button type="button" className="be-add-item" onClick={() => addListItem(section.id, block.id)}>
+                                                <HiOutlinePlus /> Thêm mục
+                                            </button>
+                                        </div>
+                                    );
+                                })()}
 
                                 {block.type === 'info_table' && renderInfoTable(section, block)}
                                 {block.type === 'benefits' && renderBenefits(section, block)}
@@ -545,18 +598,22 @@ export default function BlockEditor({ initialSections = [], onChange }: BlockEdi
                                 <button type="button" className="be-add-block-btn" onClick={() => addBlock(section.id, 'list')}>
                                     <HiOutlineListBullet /> Danh sách
                                 </button>
-                                <button type="button" className="be-add-block-btn be-add-block-new" onClick={() => addBlock(section.id, 'info_table')}>
-                                    <HiOutlineTableCells /> Bảng thông tin
-                                </button>
-                                <button type="button" className="be-add-block-btn be-add-block-new" onClick={() => addBlock(section.id, 'benefits')}>
-                                    <HiOutlineCheckBadge /> Lợi ích
-                                </button>
-                                <button type="button" className="be-add-block-btn be-add-block-new" onClick={() => addBlock(section.id, 'steps')}>
-                                    <HiOutlineQueueList /> Quy trình
-                                </button>
-                                <button type="button" className="be-add-block-btn be-add-block-new" onClick={() => addBlock(section.id, 'timeline')}>
-                                    <HiOutlineClock /> Timeline
-                                </button>
+                                {!hideAdvancedBlocks && (
+                                    <>
+                                        <button type="button" className="be-add-block-btn be-add-block-new" onClick={() => addBlock(section.id, 'info_table')}>
+                                            <HiOutlineTableCells /> Bảng thông tin
+                                        </button>
+                                        <button type="button" className="be-add-block-btn be-add-block-new" onClick={() => addBlock(section.id, 'benefits')}>
+                                            <HiOutlineCheckBadge /> Lợi ích
+                                        </button>
+                                        <button type="button" className="be-add-block-btn be-add-block-new" onClick={() => addBlock(section.id, 'steps')}>
+                                            <HiOutlineQueueList /> Quy trình
+                                        </button>
+                                        <button type="button" className="be-add-block-btn be-add-block-new" onClick={() => addBlock(section.id, 'timeline')}>
+                                            <HiOutlineClock /> Timeline
+                                        </button>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>

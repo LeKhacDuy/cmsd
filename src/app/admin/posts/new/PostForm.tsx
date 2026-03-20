@@ -80,7 +80,7 @@ export default function PostForm({
                         <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: -8, marginBottom: 16 }}>
                             Thêm các section, mỗi section có thể chứa tiêu đề phụ, đoạn văn, hình ảnh, danh sách.
                         </p>
-                        <BlockEditor initialSections={[]} onChange={setSections} />
+                        <BlockEditor initialSections={[]} onChange={setSections} hideAdvancedBlocks />
                     </div>
 
                     <div className="form-card">

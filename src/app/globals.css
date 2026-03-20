@@ -1442,6 +1442,29 @@ a {
   text-align: center;
 }
 
+.be-list-parent-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.be-list-children {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 32px;
+}
+
+.be-list-child-item {
+  opacity: 0.85;
+}
+
+.be-list-child-bullet {
+  color: var(--text-muted) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
 .be-add-item {
   display: inline-flex;
   align-items: center;
