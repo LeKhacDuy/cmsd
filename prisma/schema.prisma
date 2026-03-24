@@ -101,6 +101,7 @@ model Project {
   content       String     @db.Text
   featuredImage String?
   status        PostStatus @default(DRAFT)
+  availability  String     @default("AVAILABLE")
   locale        String     @default("vi")
   sortOrder     Int        @default(0)
   createdAt     DateTime   @default(now())

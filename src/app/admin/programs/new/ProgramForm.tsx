@@ -76,7 +76,7 @@ export default function ProgramForm({
                         <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: -8, marginBottom: 16 }}>
                             Thêm các section cho nội dung chi tiết về chương trình.
                         </p>
-                        <BlockEditor initialSections={[]} onChange={setSections} />
+                        <BlockEditor initialSections={[]} onChange={setSections} maxSections={1} hideListBlock />
                     </div>
 
                     <div className="form-card">

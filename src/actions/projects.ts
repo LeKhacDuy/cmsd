@@ -59,6 +59,7 @@ export async function createProject(formData: FormData) {
     const programId = formData.get('programId') as string;
     const sortOrder = parseInt(formData.get('sortOrder') as string) || 0;
     const locale = (formData.get('locale') as string) || 'vi';
+    const availability = (formData.get('availability') as string) || 'AVAILABLE';
 
     const slug = slugify(name, { lower: true, strict: true, locale: 'vi' });
 
@@ -78,6 +79,7 @@ export async function createProject(formData: FormData) {
             content: content || '[]',
             featuredImage: featuredImage || null,
             status: status === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT',
+            availability,
             locale,
             programId,
             sortOrder,
@@ -100,6 +102,7 @@ export async function updateProject(id: string, formData: FormData) {
     const programId = formData.get('programId') as string;
     const sortOrder = parseInt(formData.get('sortOrder') as string) || 0;
     const locale = (formData.get('locale') as string) || 'vi';
+    const availability = (formData.get('availability') as string) || 'AVAILABLE';
 
     const project = await prisma.project.update({
         where: { id },
@@ -109,6 +112,7 @@ export async function updateProject(id: string, formData: FormData) {
             content: content || '[]',
             featuredImage: featuredImage || null,
             status: status === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT',
+            availability,
             locale,
             programId,
             sortOrder,

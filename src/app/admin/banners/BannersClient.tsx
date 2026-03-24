@@ -254,8 +254,8 @@ export default function BannersClient({ banners, isAdmin }: { banners: Banner[];
                                         <form onSubmit={(e) => handleUpdateBanner(e, banner.id)}>
                                             <div className="form-row">
                                                 <div className="form-group">
-                                                    <label>Tên banner</label>
-                                                    <input type="text" name="name" className="form-input" defaultValue={banner.name} required />
+                                                    <label>Tên banner <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 400 }}>(không thể thay đổi)</span></label>
+                                                    <input type="text" className="form-input" defaultValue={banner.name} disabled style={{ opacity: 0.6, cursor: 'not-allowed' }} />
                                                 </div>
                                                 <div className="form-group">
                                                     <label>Mô tả</label>

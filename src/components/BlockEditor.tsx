@@ -14,6 +14,7 @@ import {
     HiOutlineCheckBadge,
     HiOutlineQueueList,
     HiOutlineClock,
+    HiOutlineClipboardDocumentCheck,
 } from 'react-icons/hi2';
 import ImageUpload from '@/components/ImageUpload';
 
@@ -22,17 +23,19 @@ import ImageUpload from '@/components/ImageUpload';
 type ListItem = { text: string; children: string[] };
 type InfoRow = { label: string; value: string };
 type BenefitItem = { title: string; description: string };
+type RequirementItem = { icon: string; title: string; description: string };
 type StepItem = { title: string; description: string };
 type TimelineItem = { time: string; title: string; details: string[] };
 
 export type Block = {
     id: string;
-    type: 'heading' | 'paragraph' | 'image' | 'list' | 'info_table' | 'benefits' | 'steps' | 'timeline';
+    type: 'heading' | 'paragraph' | 'image' | 'list' | 'info_table' | 'benefits' | 'requirements' | 'steps' | 'timeline';
     content: string;
     caption?: string;
     items?: ListItem[];
     infoRows?: InfoRow[];
     benefitItems?: BenefitItem[];
+    requirementItems?: RequirementItem[];
     stepItems?: StepItem[];
     timelineItems?: TimelineItem[];
 };
@@ -47,13 +50,16 @@ interface BlockEditorProps {
     initialSections?: Section[];
     onChange: (sections: Section[]) => void;
     hideAdvancedBlocks?: boolean;
+    hideListBlock?: boolean;
+    hiddenBlockTypes?: string[];
+    maxSections?: number;
 }
 
 function generateId() {
     return Math.random().toString(36).substr(2, 9);
 }
 
-export default function BlockEditor({ initialSections = [], onChange, hideAdvancedBlocks = false }: BlockEditorProps) {
+export default function BlockEditor({ initialSections = [], onChange, hideAdvancedBlocks = false, hideListBlock = false, hiddenBlockTypes = [], maxSections }: BlockEditorProps) {
     const [sections, setSections] = useState<Section[]>(initialSections);
 
     const update = (newSections: Section[]) => {
@@ -101,6 +107,7 @@ export default function BlockEditor({ initialSections = [], onChange, hideAdvanc
                     ...(type === 'image' ? { caption: '' } : {}),
                     ...(type === 'info_table' ? { infoRows: [{ label: '', value: '' }] } : {}),
                     ...(type === 'benefits' ? { benefitItems: [{ title: '', description: '' }] } : {}),
+                    ...(type === 'requirements' ? { requirementItems: [{ icon: '📋', title: '', description: '' }] } : {}),
                     ...(type === 'steps' ? { stepItems: [{ title: '', description: '' }] } : {}),
                     ...(type === 'timeline' ? { timelineItems: [{ time: '', title: '', details: [''] }] } : {}),
                 };
@@ -331,6 +338,65 @@ export default function BlockEditor({ initialSections = [], onChange, hideAdvanc
         );
     };
 
+    const renderRequirements = (section: Section, block: Block) => {
+        const items = block.requirementItems || [];
+        return (
+            <div className="be-benefits">
+                {items.map((item, idx) => (
+                    <div key={idx} className="be-benefit-card">
+                        <div className="be-benefit-card-header">
+                            <input
+                                type="text"
+                                className="be-input be-icon-input"
+                                placeholder="📋"
+                                value={item.icon}
+                                onChange={(e) => {
+                                    const updated = [...items];
+                                    updated[idx] = { ...updated[idx], icon: e.target.value };
+                                    updateBlock(section.id, block.id, { requirementItems: updated });
+                                }}
+                                style={{ width: 48, textAlign: 'center', padding: '4px', fontSize: 20 }}
+                            />
+                            <span className="be-benefit-num">Điều kiện {idx + 1}</span>
+                            <button type="button" className="be-btn-icon-sm be-btn-danger" onClick={() => {
+                                updateBlock(section.id, block.id, { requirementItems: items.filter((_, i) => i !== idx) });
+                            }}>
+                                <HiOutlineTrash />
+                            </button>
+                        </div>
+                        <input
+                            type="text"
+                            className="be-input"
+                            placeholder="Tiêu đề điều kiện"
+                            value={item.title}
+                            onChange={(e) => {
+                                const updated = [...items];
+                                updated[idx] = { ...updated[idx], title: e.target.value };
+                                updateBlock(section.id, block.id, { requirementItems: updated });
+                            }}
+                        />
+                        <textarea
+                            className="be-textarea"
+                            placeholder="Mô tả chi tiết..."
+                            value={item.description}
+                            rows={2}
+                            onChange={(e) => {
+                                const updated = [...items];
+                                updated[idx] = { ...updated[idx], description: e.target.value };
+                                updateBlock(section.id, block.id, { requirementItems: updated });
+                            }}
+                        />
+                    </div>
+                ))}
+                <button type="button" className="be-add-item" onClick={() => {
+                    updateBlock(section.id, block.id, { requirementItems: [...items, { icon: '📋', title: '', description: '' }] });
+                }}>
+                    <HiOutlinePlus /> Thêm điều kiện
+                </button>
+            </div>
+        );
+    };
+
     const renderSteps = (section: Section, block: Block) => {
         const items = block.stepItems || [];
         return (
@@ -382,6 +448,14 @@ export default function BlockEditor({ initialSections = [], onChange, hideAdvanc
         const items = block.timelineItems || [];
         return (
             <div className="be-timeline">
+                <input
+                    type="text"
+                    className="be-input"
+                    placeholder="Tiêu đề Timeline (VD: Lộ trình thực hiện)"
+                    value={block.content}
+                    onChange={(e) => updateBlock(section.id, block.id, { content: e.target.value })}
+                    style={{ marginBottom: 16, fontWeight: 600, fontSize: 15 }}
+                />
                 {items.map((item, idx) => (
                     <div key={idx} className="be-timeline-item">
                         <div className="be-timeline-marker" />
@@ -578,6 +652,7 @@ export default function BlockEditor({ initialSections = [], onChange, hideAdvanc
 
                                 {block.type === 'info_table' && renderInfoTable(section, block)}
                                 {block.type === 'benefits' && renderBenefits(section, block)}
+                                {block.type === 'requirements' && renderRequirements(section, block)}
                                 {block.type === 'steps' && renderSteps(section, block)}
                                 {block.type === 'timeline' && renderTimeline(section, block)}
                             </div>
@@ -595,34 +670,55 @@ export default function BlockEditor({ initialSections = [], onChange, hideAdvanc
                                 <button type="button" className="be-add-block-btn" onClick={() => addBlock(section.id, 'image')}>
                                     <HiOutlinePhoto /> Hình ảnh
                                 </button>
-                                <button type="button" className="be-add-block-btn" onClick={() => addBlock(section.id, 'list')}>
-                                    <HiOutlineListBullet /> Danh sách
-                                </button>
-                                {!hideAdvancedBlocks && (
-                                    <>
-                                        <button type="button" className="be-add-block-btn be-add-block-new" onClick={() => addBlock(section.id, 'info_table')}>
-                                            <HiOutlineTableCells /> Bảng thông tin
-                                        </button>
-                                        <button type="button" className="be-add-block-btn be-add-block-new" onClick={() => addBlock(section.id, 'benefits')}>
-                                            <HiOutlineCheckBadge /> Lợi ích
-                                        </button>
-                                        <button type="button" className="be-add-block-btn be-add-block-new" onClick={() => addBlock(section.id, 'steps')}>
-                                            <HiOutlineQueueList /> Quy trình
-                                        </button>
-                                        <button type="button" className="be-add-block-btn be-add-block-new" onClick={() => addBlock(section.id, 'timeline')}>
-                                            <HiOutlineClock /> Timeline
-                                        </button>
-                                    </>
+                                {!hideListBlock && (
+                                    <button type="button" className="be-add-block-btn" onClick={() => addBlock(section.id, 'list')}>
+                                        <HiOutlineListBullet /> Danh sách
+                                    </button>
                                 )}
+                                {!hideAdvancedBlocks && (() => {
+                                    const has = (t: string) => section.blocks.some(b => b.type === t);
+                                    const hidden = (t: string) => hiddenBlockTypes.includes(t);
+                                    return (
+                                        <>
+                                            {!has('info_table') && (
+                                                <button type="button" className="be-add-block-btn be-add-block-new" onClick={() => addBlock(section.id, 'info_table')}>
+                                                    <HiOutlineTableCells /> Bảng thông tin
+                                                </button>
+                                            )}
+                                            {!has('benefits') && !hidden('benefits') && (
+                                                <button type="button" className="be-add-block-btn be-add-block-new" onClick={() => addBlock(section.id, 'benefits')}>
+                                                    <HiOutlineCheckBadge /> Lợi ích
+                                                </button>
+                                            )}
+                                            {!has('requirements') && !hidden('requirements') && (
+                                                <button type="button" className="be-add-block-btn be-add-block-new" onClick={() => addBlock(section.id, 'requirements')}>
+                                                    <HiOutlineClipboardDocumentCheck /> Điều kiện tham gia
+                                                </button>
+                                            )}
+                                            {!has('steps') && !hidden('steps') && (
+                                                <button type="button" className="be-add-block-btn be-add-block-new" onClick={() => addBlock(section.id, 'steps')}>
+                                                    <HiOutlineQueueList /> Quy trình
+                                                </button>
+                                            )}
+                                            {!has('timeline') && !hidden('timeline') && (
+                                                <button type="button" className="be-add-block-btn be-add-block-new" onClick={() => addBlock(section.id, 'timeline')}>
+                                                    <HiOutlineClock /> Timeline
+                                                </button>
+                                            )}
+                                        </>
+                                    );
+                                })()}
                             </div>
                         </div>
                     </div>
                 </div>
             ))}
 
-            <button type="button" className="be-add-section" onClick={addSection}>
-                <HiOutlinePlus /> Thêm Section
-            </button>
+            {(!maxSections || sections.length < maxSections) && (
+                <button type="button" className="be-add-section" onClick={addSection}>
+                    <HiOutlinePlus /> Thêm Section
+                </button>
+            )}
         </div>
     );
 }

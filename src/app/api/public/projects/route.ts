@@ -40,6 +40,7 @@ export async function GET(request: Request) {
                 slug: true,
                 excerpt: true,
                 featuredImage: true,
+                availability: true,
                 createdAt: true,
                 program: {
                     select: {

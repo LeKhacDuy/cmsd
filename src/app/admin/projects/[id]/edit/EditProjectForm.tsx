@@ -17,6 +17,7 @@ type Project = {
     content: string;
     featuredImage: string | null;
     status: string;
+    availability: string;
     locale: string;
     sortOrder: number;
     programId: string;
@@ -106,7 +107,7 @@ export default function EditProjectForm({ project, programs }: { project: Projec
                         <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: -8, marginBottom: 16 }}>
                             Thêm các section cho nội dung chi tiết về dự án.
                         </p>
-                        <BlockEditor initialSections={sections} onChange={setSections} />
+                        <BlockEditor initialSections={sections} onChange={setSections} hideListBlock hiddenBlockTypes={['requirements']} />
                     </div>
 
                     <div className="form-card">
@@ -135,6 +136,13 @@ export default function EditProjectForm({ project, programs }: { project: Projec
                                 <select name="status" className="form-select" defaultValue={project.status}>
                                     <option value="DRAFT">Bản nháp</option>
                                     <option value="PUBLISHED">Công khai</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label>Tình trạng suất</label>
+                                <select name="availability" className="form-select" defaultValue={project.availability || 'AVAILABLE'}>
+                                    <option value="AVAILABLE">🟢 Còn suất</option>
+                                    <option value="SOLD_OUT">🔴 Hết suất</option>
                                 </select>
                             </div>
                             <div className="form-group">

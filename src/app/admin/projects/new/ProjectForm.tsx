@@ -69,7 +69,7 @@ export default function ProjectForm({ programs }: { programs: Program[] }) {
                         <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: -8, marginBottom: 16 }}>
                             Thêm các section cho nội dung chi tiết về dự án.
                         </p>
-                        <BlockEditor initialSections={[]} onChange={setSections} />
+                        <BlockEditor initialSections={[]} onChange={setSections} hideListBlock hiddenBlockTypes={['requirements']} />
                     </div>
 
                     <div className="form-card">
@@ -98,6 +98,13 @@ export default function ProjectForm({ programs }: { programs: Program[] }) {
                                 <select name="status" className="form-select">
                                     <option value="DRAFT">Bản nháp</option>
                                     <option value="PUBLISHED">Công khai</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label>Tình trạng suất</label>
+                                <select name="availability" className="form-select">
+                                    <option value="AVAILABLE">🟢 Còn suất</option>
+                                    <option value="SOLD_OUT">🔴 Hết suất</option>
                                 </select>
                             </div>
                             <div className="form-group">
