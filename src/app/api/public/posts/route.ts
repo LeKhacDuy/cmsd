@@ -26,6 +26,10 @@ export async function GET(request: Request) {
     if (search) {
         where.title = { contains: search, mode: 'insensitive' };
     }
+    const translationKey = searchParams.get('translationKey');
+    if (translationKey) {
+        where.translationKey = translationKey;
+    }
 
     const [posts, total] = await Promise.all([
         prisma.post.findMany({
@@ -34,6 +38,8 @@ export async function GET(request: Request) {
                 id: true,
                 title: true,
                 slug: true,
+                locale: true,
+                translationKey: true,
                 excerpt: true,
                 featuredImage: true,
                 publishedAt: true,

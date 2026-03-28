@@ -62,6 +62,11 @@ export default function ProjectForm({ programs }: { programs: Program[] }) {
                             <label>Mô tả ngắn</label>
                             <textarea name="excerpt" className="form-textarea" placeholder="Mô tả ngắn về dự án..." rows={3} />
                         </div>
+                        <div className="form-group">
+                            <label>Translation Key</label>
+                            <input type="text" name="translationKey" className="form-input" placeholder="VD: mother-gaston" />
+                            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Nhập cùng key cho bài VI và EN để liên kết bản dịch.</span>
+                        </div>
                     </div>
 
                     <div className="form-card">

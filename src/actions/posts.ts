@@ -72,6 +72,7 @@ export async function createPost(formData: FormData) {
     const status = formData.get('status') as string;
     const featuredImage = formData.get('featuredImage') as string;
     const locale = (formData.get('locale') as string) || 'vi';
+    const translationKey = formData.get('translationKey') as string;
 
     const slug = slugify(title, { lower: true, strict: true, locale: 'vi' });
 
@@ -91,6 +92,7 @@ export async function createPost(formData: FormData) {
             featuredImage: featuredImage || null,
             publishedAt: status === 'PUBLISHED' ? new Date() : null,
             locale,
+            translationKey: translationKey || null,
             authorId: (session.user as any).id,
         },
     });
@@ -112,6 +114,7 @@ export async function updatePost(id: string, formData: FormData) {
     const status = formData.get('status') as string;
     const featuredImage = formData.get('featuredImage') as string;
     const locale = (formData.get('locale') as string) || 'vi';
+    const translationKey = formData.get('translationKey') as string;
 
     const post = await prisma.post.update({
         where: { id },
@@ -125,6 +128,7 @@ export async function updatePost(id: string, formData: FormData) {
             featuredImage: featuredImage || null,
             publishedAt: status === 'PUBLISHED' ? new Date() : null,
             locale,
+            translationKey: translationKey || null,
         },
     });
 

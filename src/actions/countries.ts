@@ -19,10 +19,11 @@ export async function createCountry(formData: FormData) {
 
     const name = formData.get('name') as string;
     const flagIcon = formData.get('flagIcon') as string;
+    const locale = (formData.get('locale') as string) || 'vi';
     const slug = slugify(name, { lower: true, strict: true, locale: 'vi' });
 
     await prisma.country.create({
-        data: { name, slug, flagIcon: flagIcon || null },
+        data: { name, slug, flagIcon: flagIcon || null, locale },
     });
 
     revalidatePath('/admin/countries');

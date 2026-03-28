@@ -109,6 +109,11 @@ export default function EditProgramForm({
                             <label>Mô tả ngắn</label>
                             <textarea name="excerpt" className="form-textarea" defaultValue={program.excerpt || ''} rows={3} />
                         </div>
+                        <div className="form-group">
+                            <label>Translation Key</label>
+                            <input type="text" name="translationKey" className="form-input" defaultValue={(program as any).translationKey || ''} placeholder="VD: eb5-visa" />
+                            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Nhập cùng key cho bài VI và EN để liên kết bản dịch.</span>
+                        </div>
                     </div>
 
                     <div className="form-card">

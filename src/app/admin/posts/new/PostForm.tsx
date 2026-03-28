@@ -73,6 +73,12 @@ export default function PostForm({
                             <label>Mô tả ngắn (Excerpt)</label>
                             <textarea name="excerpt" className="form-textarea" placeholder="Nhập mô tả ngắn cho bài viết..." rows={3} />
                         </div>
+
+                        <div className="form-group">
+                            <label>Translation Key</label>
+                            <input type="text" name="translationKey" className="form-input" placeholder="VD: us-immigration" />
+                            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Nhập cùng key cho bài VI và EN để liên kết bản dịch.</span>
+                        </div>
                     </div>
 
                     <div className="form-card">

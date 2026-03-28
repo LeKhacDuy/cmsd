@@ -11,6 +11,7 @@ type ServiceGroup = {
     name: string;
     slug: string;
     icon: string | null;
+    locale: string;
     sortOrder: number;
     _count: { programs: number };
 };
@@ -68,6 +69,13 @@ export default function ServiceGroupsClient({ groups, isAdmin }: { groups: Servi
                             <label>Icon</label>
                             <input type="text" name="icon" className="form-input" placeholder="🇺🇸" />
                         </div>
+                        <div className="form-group" style={{ width: 140 }}>
+                            <label>Ngôn ngữ</label>
+                            <select name="locale" className="form-select" defaultValue="vi">
+                                <option value="vi">🇻🇳 Tiếng Việt</option>
+                                <option value="en">🇬🇧 English</option>
+                            </select>
+                        </div>
                         <div className="form-group" style={{ width: 80 }}>
                             <label>Thứ tự</label>
                             <input type="number" name="sortOrder" className="form-input" defaultValue={0} />
@@ -86,6 +94,7 @@ export default function ServiceGroupsClient({ groups, isAdmin }: { groups: Servi
                                 <th>Icon</th>
                                 <th>Tên nhóm</th>
                                 <th>Slug</th>
+                                <th>Ngôn ngữ</th>
                                 <th>Số chương trình</th>
                                 {isAdmin && <th style={{ width: 80 }}>Xoá</th>}
                             </tr>
@@ -104,6 +113,7 @@ export default function ServiceGroupsClient({ groups, isAdmin }: { groups: Servi
                                         <td style={{ fontSize: 20 }}>{g.icon || '—'}</td>
                                         <td><strong>{g.name}</strong></td>
                                         <td style={{ color: 'var(--text-muted)', fontSize: 13 }}>{g.slug}</td>
+                                        <td><span className={`locale-badge locale-${g.locale || 'vi'}`}>{g.locale === 'en' ? '🇬🇧 EN' : '🇻🇳 VI'}</span></td>
                                         <td>{g._count.programs}</td>
                                         {isAdmin && (
                                             <td>

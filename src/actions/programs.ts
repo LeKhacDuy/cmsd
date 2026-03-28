@@ -22,10 +22,11 @@ export async function createServiceGroup(formData: FormData) {
     const name = formData.get('name') as string;
     const icon = formData.get('icon') as string;
     const sortOrder = parseInt(formData.get('sortOrder') as string) || 0;
+    const locale = (formData.get('locale') as string) || 'vi';
     const slug = slugify(name, { lower: true, strict: true, locale: 'vi' });
 
     await prisma.serviceGroup.create({
-        data: { name, slug, icon: icon || null, sortOrder },
+        data: { name, slug, icon: icon || null, sortOrder, locale },
     });
 
     revalidatePath('/admin/programs');
@@ -90,6 +91,7 @@ export async function createProgram(formData: FormData) {
     const countryId = formData.get('countryId') as string;
     const sortOrder = parseInt(formData.get('sortOrder') as string) || 0;
     const locale = (formData.get('locale') as string) || 'vi';
+    const translationKey = formData.get('translationKey') as string;
 
     const slug = slugify(name, { lower: true, strict: true, locale: 'vi' });
 
@@ -106,6 +108,7 @@ export async function createProgram(formData: FormData) {
             featuredImage: featuredImage || null,
             status: status === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT',
             locale,
+            translationKey: translationKey || null,
             serviceGroupId,
             countryId: countryId || null,
             sortOrder,
@@ -129,6 +132,7 @@ export async function updateProgram(id: string, formData: FormData) {
     const countryId = formData.get('countryId') as string;
     const sortOrder = parseInt(formData.get('sortOrder') as string) || 0;
     const locale = (formData.get('locale') as string) || 'vi';
+    const translationKey = formData.get('translationKey') as string;
 
     const program = await prisma.program.update({
         where: { id },
@@ -139,6 +143,7 @@ export async function updateProgram(id: string, formData: FormData) {
             featuredImage: featuredImage || null,
             status: status === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT',
             locale,
+            translationKey: translationKey || null,
             serviceGroupId,
             countryId: countryId || null,
             sortOrder,

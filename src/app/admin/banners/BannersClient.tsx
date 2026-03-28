@@ -27,6 +27,7 @@ type BannerImage = {
     id: string;
     url: string;
     title: string | null;
+    titleEn: string | null;
     link: string | null;
     sortOrder: number;
     isActive: boolean;
@@ -122,6 +123,7 @@ export default function BannersClient({ banners, isAdmin }: { banners: Banner[];
         try {
             await updateBannerImage(imageId, {
                 title: fd.get('title') as string,
+                titleEn: fd.get('titleEn') as string,
                 link: fd.get('link') as string,
                 sortOrder: parseInt(fd.get('sortOrder') as string) || 0,
             });
@@ -342,8 +344,12 @@ export default function BannersClient({ banners, isAdmin }: { banners: Banner[];
                                                         {editingImage === img.id ? (
                                                             <form onSubmit={(e) => handleUpdateImage(e, img.id)} style={{ padding: 12 }}>
                                                                 <div className="form-group" style={{ marginBottom: 8 }}>
-                                                                    <label style={{ fontSize: 12 }}>Tiêu đề</label>
-                                                                    <input type="text" name="title" className="form-input" defaultValue={img.title || ''} style={{ padding: '6px 10px', fontSize: 13 }} />
+                                                                    <label style={{ fontSize: 12 }}>Tiêu đề (Việt)</label>
+                                                                    <input type="text" name="title" className="form-input" defaultValue={img.title || ''} placeholder="Tiêu đề tiếng Việt" style={{ padding: '6px 10px', fontSize: 13 }} />
+                                                                </div>
+                                                                <div className="form-group" style={{ marginBottom: 8 }}>
+                                                                    <label style={{ fontSize: 12 }}>Tiêu đề (English)</label>
+                                                                    <input type="text" name="titleEn" className="form-input" defaultValue={img.titleEn || ''} placeholder="English title" style={{ padding: '6px 10px', fontSize: 13 }} />
                                                                 </div>
                                                                 <div className="form-group" style={{ marginBottom: 8 }}>
                                                                     <label style={{ fontSize: 12 }}>Link khi click</label>

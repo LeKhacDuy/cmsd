@@ -37,6 +37,7 @@ model Category {
   name        String
   slug        String   @unique
   description String?
+  locale      String   @default("vi")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -50,6 +51,7 @@ model Country {
   name     String
   slug     String @unique
   flagIcon String?
+  locale   String @default("vi")
 
   posts    Post[]
   programs Program[]
@@ -62,6 +64,7 @@ model ServiceGroup {
   name        String
   slug        String   @unique
   icon        String?
+  locale      String   @default("vi")
   sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -72,17 +75,18 @@ model ServiceGroup {
 }
 
 model Program {
-  id            String     @id @default(cuid())
-  name          String
-  slug          String     @unique
-  excerpt       String?
-  content       String     @db.Text
-  featuredImage String?
-  status        PostStatus @default(DRAFT)
-  locale        String     @default("vi")
-  sortOrder     Int        @default(0)
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  id              String     @id @default(cuid())
+  name            String
+  slug            String     @unique
+  excerpt         String?
+  content         String     @db.Text
+  featuredImage   String?
+  status          PostStatus @default(DRAFT)
+  locale          String     @default("vi")
+  translationKey  String?
+  sortOrder       Int        @default(0)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
 
   serviceGroupId String
   serviceGroup   ServiceGroup @relation(fields: [serviceGroupId], references: [id])
@@ -94,18 +98,19 @@ model Program {
 }
 
 model Project {
-  id            String     @id @default(cuid())
-  name          String
-  slug          String     @unique
-  excerpt       String?
-  content       String     @db.Text
-  featuredImage String?
-  status        PostStatus @default(DRAFT)
-  availability  String     @default("AVAILABLE")
-  locale        String     @default("vi")
-  sortOrder     Int        @default(0)
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  id              String     @id @default(cuid())
+  name            String
+  slug            String     @unique
+  excerpt         String?
+  content         String     @db.Text
+  featuredImage   String?
+  status          PostStatus @default(DRAFT)
+  availability    String     @default("AVAILABLE")
+  locale          String     @default("vi")
+  translationKey  String?
+  sortOrder       Int        @default(0)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
 
   programId     String
   program       Program    @relation(fields: [programId], references: [id], onDelete: Cascade)
@@ -114,17 +119,18 @@ model Project {
 }
 
 model Post {
-  id            String     @id @default(cuid())
-  title         String
-  slug          String     @unique
-  excerpt       String?
-  content       String     @db.Text
-  featuredImage String?
-  status        PostStatus @default(DRAFT)
-  locale        String     @default("vi")
-  publishedAt   DateTime?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  id              String     @id @default(cuid())
+  title           String
+  slug            String     @unique
+  excerpt         String?
+  content         String     @db.Text
+  featuredImage   String?
+  status          PostStatus @default(DRAFT)
+  locale          String     @default("vi")
+  translationKey  String?
+  publishedAt     DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
 
   authorId   String
   author     User     @relation(fields: [authorId], references: [id])
@@ -191,6 +197,7 @@ model BannerImage {
   id        String   @id @default(cuid())
   url       String
   title     String?
+  titleEn   String?
   link      String?
   sortOrder Int      @default(0)
   isActive  Boolean  @default(true)

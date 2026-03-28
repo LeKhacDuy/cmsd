@@ -10,6 +10,7 @@ type Country = {
     name: string;
     slug: string;
     flagIcon: string | null;
+    locale: string;
     _count: { posts: number };
 };
 
@@ -61,6 +62,13 @@ export default function CountriesClient({ countries, isAdmin }: { countries: Cou
                                     <label>Icon cờ (emoji)</label>
                                     <input type="text" name="flagIcon" className="form-input" placeholder="VD: 🇺🇸" />
                                 </div>
+                                <div className="form-group">
+                                    <label>Ngôn ngữ</label>
+                                    <select name="locale" className="form-select" defaultValue="vi">
+                                        <option value="vi">🇻🇳 Tiếng Việt</option>
+                                        <option value="en">🇬🇧 English</option>
+                                    </select>
+                                </div>
                             </div>
                             <div className="form-actions">
                                 <button type="submit" className="btn btn-primary" style={{ width: 'auto' }} disabled={loading}>
@@ -90,6 +98,7 @@ export default function CountriesClient({ countries, isAdmin }: { countries: Cou
                                     <th>Cờ</th>
                                     <th>Tên</th>
                                     <th>Slug</th>
+                                    <th>Ngôn ngữ</th>
                                     <th>Số bài viết</th>
                                     {isAdmin && <th>Thao tác</th>}
                                 </tr>
@@ -100,6 +109,7 @@ export default function CountriesClient({ countries, isAdmin }: { countries: Cou
                                         <td style={{ fontSize: 24 }}>{c.flagIcon || '🏳️'}</td>
                                         <td className="table-title">{c.name}</td>
                                         <td>{c.slug}</td>
+                                        <td><span className={`locale-badge locale-${c.locale || 'vi'}`}>{c.locale === 'en' ? '🇬🇧 EN' : '🇻🇳 VI'}</span></td>
                                         <td>{c._count.posts}</td>
                                         {isAdmin && (
                                             <td>

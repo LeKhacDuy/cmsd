@@ -26,6 +26,8 @@ export async function GET(request: Request) {
             id: true,
             name: true,
             slug: true,
+            locale: true,
+            translationKey: true,
             excerpt: true,
             featuredImage: true,
             sortOrder: true,

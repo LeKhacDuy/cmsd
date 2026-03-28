@@ -19,10 +19,11 @@ export async function createCategory(formData: FormData) {
 
     const name = formData.get('name') as string;
     const description = formData.get('description') as string;
+    const locale = (formData.get('locale') as string) || 'vi';
     const slug = slugify(name, { lower: true, strict: true, locale: 'vi' });
 
     await prisma.category.create({
-        data: { name, slug, description: description || null },
+        data: { name, slug, description: description || null, locale },
     });
 
     revalidatePath('/admin/categories');

@@ -10,6 +10,7 @@ type Category = {
     name: string;
     slug: string;
     description: string | null;
+    locale: string;
     _count: { posts: number };
 };
 
@@ -61,6 +62,13 @@ export default function CategoriesClient({ categories, isAdmin }: { categories: 
                                     <label>Mô tả</label>
                                     <input type="text" name="description" className="form-input" placeholder="Mô tả ngắn..." />
                                 </div>
+                                <div className="form-group">
+                                    <label>Ngôn ngữ</label>
+                                    <select name="locale" className="form-select" defaultValue="vi">
+                                        <option value="vi">🇻🇳 Tiếng Việt</option>
+                                        <option value="en">🇬🇧 English</option>
+                                    </select>
+                                </div>
                             </div>
                             <div className="form-actions">
                                 <button type="submit" className="btn btn-primary" style={{ width: 'auto' }} disabled={loading}>
@@ -90,6 +98,7 @@ export default function CategoriesClient({ categories, isAdmin }: { categories: 
                                     <th>Tên</th>
                                     <th>Slug</th>
                                     <th>Mô tả</th>
+                                    <th>Ngôn ngữ</th>
                                     <th>Số bài viết</th>
                                     {isAdmin && <th>Thao tác</th>}
                                 </tr>
@@ -100,6 +109,7 @@ export default function CategoriesClient({ categories, isAdmin }: { categories: 
                                         <td className="table-title">{cat.name}</td>
                                         <td>{cat.slug}</td>
                                         <td>{cat.description || '—'}</td>
+                                        <td><span className={`locale-badge locale-${cat.locale || 'vi'}`}>{cat.locale === 'en' ? '🇬🇧 EN' : '🇻🇳 VI'}</span></td>
                                         <td>{cat._count.posts}</td>
                                         {isAdmin && (
                                             <td>

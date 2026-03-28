@@ -104,6 +104,7 @@ export async function addBannerImage(bannerId: string, data: {
 
 export async function updateBannerImage(id: string, data: {
     title?: string;
+    titleEn?: string;
     link?: string;
     sortOrder?: number;
     isActive?: boolean;
@@ -115,6 +116,7 @@ export async function updateBannerImage(id: string, data: {
         where: { id },
         data: {
             title: data.title ?? undefined,
+            titleEn: data.titleEn ?? undefined,
             link: data.link ?? undefined,
             sortOrder: data.sortOrder ?? undefined,
             isActive: data.isActive ?? undefined,
