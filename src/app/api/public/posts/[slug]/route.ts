@@ -20,5 +20,14 @@ export async function GET(
         return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
-    return NextResponse.json(post);
+    // Lấy tất cả bản dịch nếu có translationKey
+    let translations: { locale: string; slug: string }[] = [];
+    if (post.translationKey) {
+        translations = await prisma.post.findMany({
+            where: { translationKey: post.translationKey, status: 'PUBLISHED' },
+            select: { locale: true, slug: true },
+        });
+    }
+
+    return NextResponse.json({ ...post, translations });
 }

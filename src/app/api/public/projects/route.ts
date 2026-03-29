@@ -53,7 +53,25 @@ export async function GET(request: Request) {
             },
         });
 
-        return NextResponse.json({ data: projects });
+        // Lấy tất cả translations — 1 query duy nhất
+        const keys = [...new Set(projects.map(p => p.translationKey).filter(Boolean))] as string[];
+        const allTranslations = keys.length > 0
+            ? await prisma.project.findMany({
+                where: { translationKey: { in: keys }, status: 'PUBLISHED' },
+                select: { translationKey: true, locale: true, slug: true },
+            })
+            : [];
+
+        const projectsWithTranslations = projects.map(project => ({
+            ...project,
+            translations: project.translationKey
+                ? allTranslations
+                    .filter(t => t.translationKey === project.translationKey)
+                    .map(t => ({ locale: t.locale, slug: t.slug }))
+                : [],
+        }));
+
+        return NextResponse.json({ data: projectsWithTranslations });
     } catch (error: any) {
         return NextResponse.json(
             { error: 'Failed to fetch projects' },

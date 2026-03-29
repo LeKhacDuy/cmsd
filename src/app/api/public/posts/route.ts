@@ -54,8 +54,26 @@ export async function GET(request: Request) {
         prisma.post.count({ where }),
     ]);
 
+    // Lấy tất cả translations của các bài có translationKey — 1 query duy nhất
+    const keys = [...new Set(posts.map(p => p.translationKey).filter(Boolean))] as string[];
+    const allTranslations = keys.length > 0
+        ? await prisma.post.findMany({
+            where: { translationKey: { in: keys }, status: 'PUBLISHED' },
+            select: { translationKey: true, locale: true, slug: true },
+        })
+        : [];
+
+    const postsWithTranslations = posts.map(post => ({
+        ...post,
+        translations: post.translationKey
+            ? allTranslations
+                .filter(t => t.translationKey === post.translationKey)
+                .map(t => ({ locale: t.locale, slug: t.slug }))
+            : [],
+    }));
+
     return NextResponse.json({
-        posts,
+        posts: postsWithTranslations,
         pagination: {
             total,
             totalPages: Math.ceil(total / limit),

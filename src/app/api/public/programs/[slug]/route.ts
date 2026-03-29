@@ -19,5 +19,14 @@ export async function GET(
         return NextResponse.json({ error: 'Program not found' }, { status: 404 });
     }
 
-    return NextResponse.json(program);
+    // Lấy tất cả bản dịch nếu có translationKey
+    let translations: { locale: string; slug: string }[] = [];
+    if (program.translationKey) {
+        translations = await prisma.program.findMany({
+            where: { translationKey: program.translationKey, status: 'PUBLISHED' },
+            select: { locale: true, slug: true },
+        });
+    }
+
+    return NextResponse.json({ ...program, translations });
 }

@@ -37,5 +37,23 @@ export async function GET(request: Request) {
         orderBy: [{ serviceGroup: { sortOrder: 'asc' } }, { sortOrder: 'asc' }],
     });
 
-    return NextResponse.json({ programs });
+    // Lấy tất cả translations — 1 query duy nhất
+    const keys = [...new Set(programs.map(p => p.translationKey).filter(Boolean))] as string[];
+    const allTranslations = keys.length > 0
+        ? await prisma.program.findMany({
+            where: { translationKey: { in: keys }, status: 'PUBLISHED' },
+            select: { translationKey: true, locale: true, slug: true },
+        })
+        : [];
+
+    const programsWithTranslations = programs.map(program => ({
+        ...program,
+        translations: program.translationKey
+            ? allTranslations
+                .filter(t => t.translationKey === program.translationKey)
+                .map(t => ({ locale: t.locale, slug: t.slug }))
+            : [],
+    }));
+
+    return NextResponse.json({ programs: programsWithTranslations });
 }
