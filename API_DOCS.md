@@ -175,7 +175,15 @@ Field `content` là **JSON string** chứa mảng các **Section**, mỗi sectio
 
 **`GET /api/public/categories`**
 
-Trả về tất cả danh mục kèm số bài viết `PUBLISHED`.
+Trả về danh sách danh mục theo ngôn ngữ kèm số bài viết `PUBLISHED`.
+
+**Query Parameters (tùy chọn):**
+
+| Tham số | Kiểu | Mô tả | Mặc định |
+|---------|------|-------|----------|
+| `locale` | string | Ngôn ngữ: `vi` hoặc `en` | `vi` |
+
+**Ví dụ:** `/api/public/categories?locale=en`
 
 **Response `200 OK`:**
 ```json
@@ -207,7 +215,15 @@ Trả về tất cả danh mục kèm số bài viết `PUBLISHED`.
 
 **`GET /api/public/countries`**
 
-Trả về tất cả quốc gia kèm số bài viết `PUBLISHED`.
+Trả về danh sách quốc gia theo ngôn ngữ kèm số bài viết `PUBLISHED`.
+
+**Query Parameters (tùy chọn):**
+
+| Tham số | Kiểu | Mô tả | Mặc định |
+|---------|------|-------|----------|
+| `locale` | string | Ngôn ngữ: `vi` hoặc `en` | `vi` |
+
+**Ví dụ:** `/api/public/countries?locale=en`
 
 **Response `200 OK`:**
 ```json
