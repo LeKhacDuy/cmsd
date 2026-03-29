@@ -70,8 +70,8 @@ export default function ProgramForm({
                             <textarea name="excerpt" className="form-textarea" placeholder="Mô tả ngắn về chương trình..." rows={3} />
                         </div>
                         <div className="form-group">
-                            <label>Translation Key</label>
-                            <input type="text" name="translationKey" className="form-input" placeholder="VD: eb5-visa" />
+                            <label>Translation Key *</label>
+                            <input type="text" name="translationKey" className="form-input" placeholder="VD: eb5-visa" required />
                             <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Nhập cùng key cho bài VI và EN để liên kết bản dịch.</span>
                         </div>
                     </div>

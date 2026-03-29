@@ -75,8 +75,8 @@ export default function PostForm({
                         </div>
 
                         <div className="form-group">
-                            <label>Translation Key</label>
-                            <input type="text" name="translationKey" className="form-input" placeholder="VD: us-immigration" />
+                            <label>Translation Key *</label>
+                            <input type="text" name="translationKey" className="form-input" placeholder="VD: us-immigration" required />
                             <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Nhập cùng key cho bài VI và EN để liên kết bản dịch.</span>
                         </div>
                     </div>

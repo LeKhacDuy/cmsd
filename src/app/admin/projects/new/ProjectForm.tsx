@@ -63,8 +63,8 @@ export default function ProjectForm({ programs }: { programs: Program[] }) {
                             <textarea name="excerpt" className="form-textarea" placeholder="Mô tả ngắn về dự án..." rows={3} />
                         </div>
                         <div className="form-group">
-                            <label>Translation Key</label>
-                            <input type="text" name="translationKey" className="form-input" placeholder="VD: mother-gaston" />
+                            <label>Translation Key *</label>
+                            <input type="text" name="translationKey" className="form-input" placeholder="VD: mother-gaston" required />
                             <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Nhập cùng key cho bài VI và EN để liên kết bản dịch.</span>
                         </div>
                     </div>
@@ -74,7 +74,7 @@ export default function ProjectForm({ programs }: { programs: Program[] }) {
                         <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: -8, marginBottom: 16 }}>
                             Thêm các section cho nội dung chi tiết về dự án.
                         </p>
-                        <BlockEditor initialSections={[]} onChange={setSections} hideListBlock hiddenBlockTypes={['requirements']} />
+                        <BlockEditor initialSections={[]} onChange={setSections} hideListBlock hiddenBlockTypes={['requirements']} maxSections={1} />
                     </div>
 
                     <div className="form-card">

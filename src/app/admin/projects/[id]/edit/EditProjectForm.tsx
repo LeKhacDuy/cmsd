@@ -112,7 +112,7 @@ export default function EditProjectForm({ project, programs }: { project: Projec
                         <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: -8, marginBottom: 16 }}>
                             Thêm các section cho nội dung chi tiết về dự án.
                         </p>
-                        <BlockEditor initialSections={sections} onChange={setSections} hideListBlock hiddenBlockTypes={['requirements']} />
+                        <BlockEditor initialSections={sections} onChange={setSections} hideListBlock hiddenBlockTypes={['requirements']} maxSections={1} />
                     </div>
 
                     <div className="form-card">
