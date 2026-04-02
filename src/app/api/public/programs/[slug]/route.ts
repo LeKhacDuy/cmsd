@@ -10,7 +10,7 @@ export async function GET(
     const program = await prisma.program.findUnique({
         where: { slug, status: 'PUBLISHED' },
         include: {
-            serviceGroup: { select: { name: true, slug: true } },
+            serviceGroup: { select: { name: true, slug: true, icon: true } },
             country: { select: { name: true, slug: true, flagIcon: true } },
         },
     });

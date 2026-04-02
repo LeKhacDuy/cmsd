@@ -31,7 +31,7 @@ export async function GET(request: Request) {
             excerpt: true,
             featuredImage: true,
             sortOrder: true,
-            serviceGroup: { select: { name: true, slug: true } },
+            serviceGroup: { select: { name: true, slug: true, icon: true } },
             country: { select: { name: true, slug: true, flagIcon: true } },
         },
         orderBy: [{ serviceGroup: { sortOrder: 'asc' } }, { sortOrder: 'asc' }],

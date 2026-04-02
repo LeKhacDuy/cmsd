@@ -4,7 +4,9 @@ import type { NextRequest } from 'next/server';
 
 const allowedOrigins = [
     'https://d-immigration.vn',
+    'https://www.d-immigration.vn',
     'https://d-immigration.com',
+    'https://www.d-immigration.com',
     'http://localhost:3000',
     'http://localhost:3001',
     'http://localhost:5173',
