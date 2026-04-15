@@ -382,13 +382,7 @@ export default function BlockEditor({ initialSections = [], onChange, hideAdvanc
                                     </button>
                                 ))}
                             </div>
-                            {item.icon && (
-                                <div className="be-req-icon-preview">
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img src={item.icon} alt="preview" width={40} height={40} style={{ objectFit: 'contain' }} />
-                                    <span style={{ fontSize: 12, color: 'var(--text-muted)', marginLeft: 8 }}>Đã chọn</span>
-                                </div>
-                            )}
+
                         </div>
 
                         <input
