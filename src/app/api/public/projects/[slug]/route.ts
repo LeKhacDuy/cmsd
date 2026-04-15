@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { enrichContentIcons } from '@/lib/contentUtils';
 
 export async function GET(
     request: Request,
@@ -28,8 +29,13 @@ export async function GET(
             });
         }
 
-        return NextResponse.json({ data: { ...project, translations } });
+        // Enrich icon URLs trong content thành full URL
+        const baseUrl = new URL(request.url).origin;
+        const content = enrichContentIcons(project.content, baseUrl);
+
+        return NextResponse.json({ data: { ...project, content, translations } });
     } catch (error: any) {
         return NextResponse.json({ error: 'Failed to fetch project' }, { status: 500 });
     }
 }
+

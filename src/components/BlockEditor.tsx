@@ -338,6 +338,14 @@ export default function BlockEditor({ initialSections = [], onChange, hideAdvanc
         );
     };
 
+    const REQUIREMENT_ICONS = [
+        { path: '/icon-dieu-kien-tham-gia/Bank.png', label: 'Bank' },
+        { path: '/icon-dieu-kien-tham-gia/Coins.png', label: 'Coins' },
+        { path: '/icon-dieu-kien-tham-gia/MinusCircle.png', label: 'MinusCircle' },
+        { path: '/icon-dieu-kien-tham-gia/ReadCvLogo.png', label: 'ReadCvLogo' },
+        { path: '/icon-dieu-kien-tham-gia/Vector.png', label: 'Vector' },
+    ];
+
     const renderRequirements = (section: Section, block: Block) => {
         const items = block.requirementItems || [];
         return (
@@ -345,18 +353,6 @@ export default function BlockEditor({ initialSections = [], onChange, hideAdvanc
                 {items.map((item, idx) => (
                     <div key={idx} className="be-benefit-card">
                         <div className="be-benefit-card-header">
-                            <input
-                                type="text"
-                                className="be-input be-icon-input"
-                                placeholder="📋"
-                                value={item.icon}
-                                onChange={(e) => {
-                                    const updated = [...items];
-                                    updated[idx] = { ...updated[idx], icon: e.target.value };
-                                    updateBlock(section.id, block.id, { requirementItems: updated });
-                                }}
-                                style={{ width: 48, textAlign: 'center', padding: '4px', fontSize: 20 }}
-                            />
                             <span className="be-benefit-num">Điều kiện {idx + 1}</span>
                             <button type="button" className="be-btn-icon-sm be-btn-danger" onClick={() => {
                                 updateBlock(section.id, block.id, { requirementItems: items.filter((_, i) => i !== idx) });
@@ -364,6 +360,37 @@ export default function BlockEditor({ initialSections = [], onChange, hideAdvanc
                                 <HiOutlineTrash />
                             </button>
                         </div>
+
+                        {/* Icon picker */}
+                        <div className="be-req-icon-section">
+                            <span className="be-req-icon-label">Chọn icon:</span>
+                            <div className="be-req-icon-grid">
+                                {REQUIREMENT_ICONS.map((ic) => (
+                                    <button
+                                        key={ic.path}
+                                        type="button"
+                                        className={`be-req-icon-btn${item.icon === ic.path ? ' be-req-icon-btn--active' : ''}`}
+                                        onClick={() => {
+                                            const updated = [...items];
+                                            updated[idx] = { ...updated[idx], icon: ic.path };
+                                            updateBlock(section.id, block.id, { requirementItems: updated });
+                                        }}
+                                        title={ic.label}
+                                    >
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img src={ic.path} alt={ic.label} width={32} height={32} style={{ objectFit: 'contain' }} />
+                                    </button>
+                                ))}
+                            </div>
+                            {item.icon && (
+                                <div className="be-req-icon-preview">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img src={item.icon} alt="preview" width={40} height={40} style={{ objectFit: 'contain' }} />
+                                    <span style={{ fontSize: 12, color: 'var(--text-muted)', marginLeft: 8 }}>Đã chọn</span>
+                                </div>
+                            )}
+                        </div>
+
                         <input
                             type="text"
                             className="be-input"
@@ -389,7 +416,7 @@ export default function BlockEditor({ initialSections = [], onChange, hideAdvanc
                     </div>
                 ))}
                 <button type="button" className="be-add-item" onClick={() => {
-                    updateBlock(section.id, block.id, { requirementItems: [...items, { icon: '📋', title: '', description: '' }] });
+                    updateBlock(section.id, block.id, { requirementItems: [...items, { icon: '', title: '', description: '' }] });
                 }}>
                     <HiOutlinePlus /> Thêm điều kiện
                 </button>

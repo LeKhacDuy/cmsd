@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { enrichContentIcons } from '@/lib/contentUtils';
 
 export async function GET(
     request: Request,
@@ -28,5 +29,10 @@ export async function GET(
         });
     }
 
-    return NextResponse.json({ ...program, translations });
+    // Enrich icon URLs trong content thành full URL
+    const baseUrl = new URL(request.url).origin;
+    const content = enrichContentIcons(program.content, baseUrl);
+
+    return NextResponse.json({ ...program, content, translations });
 }
+

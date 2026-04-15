@@ -1622,6 +1622,56 @@ a {
   grid-column: 1 / -1;
 }
 
+/* ---- Requirement Icon Picker ---- */
+.be-req-icon-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.be-req-icon-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.be-req-icon-grid {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.be-req-icon-btn {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+  padding: 8px;
+}
+
+.be-req-icon-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+.be-req-icon-btn--active {
+  border-color: var(--accent) !important;
+  background: var(--accent-light) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.be-req-icon-preview {
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
+}
+
 /* ---- Steps ---- */
 .be-steps {
   display: flex;
